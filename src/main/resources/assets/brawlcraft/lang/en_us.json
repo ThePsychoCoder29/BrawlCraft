@@ -1,0 +1,11 @@
+{
+  "item.brawlcraft.dynamite" : "Dynamite",
+  "item.brawlcraft.jacky_drill" : "Jacky's Drill-hammer",
+  "creativemodetab.brawlcraft.brawlcrafttab": "BrawlCraft",
+
+  "tooltip.brawlcraft.shift.tooltip": "Hold SHIFT to know more!",
+  "tooltip.brawlcraft.dynamite.tooltip": "Right-click to throw.\nCreates Explosion on the site of landing.",
+  "debug.brawlers.select_next": "Select Next",
+  "key.brawlcraft.open_brawler_switcher": "Brawler Switcher",
+  "debug.gamemodes.press_O": "Press [O]"
+}

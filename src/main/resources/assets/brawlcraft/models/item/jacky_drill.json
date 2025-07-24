@@ -1,0 +1,6 @@
+{
+  "parent" : "minecraft:item/generated",
+  "textures" : {
+    "layer0" : "brawlcraft:item/jacky_drill"
+  }
+}
