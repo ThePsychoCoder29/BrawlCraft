@@ -16,6 +16,7 @@ public class ModCreativeModeTabs {
             Registries.CREATIVE_MODE_TAB, BrawlCraftMod.MOD_ID
     );
 
+    @SuppressWarnings("unused")
     public static final RegistryObject<CreativeModeTab> BRAWLCRAFT_TAB = CREATIVE_MODE_TAB.register("brawlcrafttab",
             ()-> CreativeModeTab.builder().
                     icon(()-> new ItemStack(ModItems.DYNAMITE.get())).

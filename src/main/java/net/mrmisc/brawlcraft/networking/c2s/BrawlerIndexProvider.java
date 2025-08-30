@@ -27,7 +27,7 @@ public class BrawlerIndexProvider implements ICapabilityProvider, INBTSerializab
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == BRAWLER_INDEX){
+        if(cap.equals(BRAWLER_INDEX)){
             return optional.cast();
         }
 

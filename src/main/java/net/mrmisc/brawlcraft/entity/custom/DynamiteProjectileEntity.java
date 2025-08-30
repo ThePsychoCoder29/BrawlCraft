@@ -46,7 +46,6 @@ public class DynamiteProjectileEntity extends Snowball {
     public void handleEntityEvent(byte pId) {
         if (pId == 3) {
             ParticleOptions particleoptions = this.getParticle();
-
             for (int i = 0; i < 8; i++) {
                 this.level().addParticle(particleoptions, this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
             }
@@ -72,8 +71,16 @@ public class DynamiteProjectileEntity extends Snowball {
         double y = pos.getY();
         double z = pos.getZ();
         if(!level.isClientSide()) {
-            level.explode(this,Explosion.getDefaultDamageSource(this.level(), this), null,
-                    x, y + yOffset , z, 2.0F, false, Level.ExplosionInteraction.TNT);
+            level.explode(
+                    this,
+                    Explosion.getDefaultDamageSource(this.level(), this),
+                    null,
+                    x,
+                    y + yOffset,
+                    z,
+                    2.0F,
+                    false,
+                    Level.ExplosionInteraction.TNT);
         }
     }
 }

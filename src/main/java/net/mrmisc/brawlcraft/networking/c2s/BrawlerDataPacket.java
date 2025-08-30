@@ -18,7 +18,10 @@ public class BrawlerDataPacket{
     }
 
     public void handle(CustomPayloadEvent.Context context){
-        context.enqueueWork(()-> BrawlerIndex.setBrawlerIndex(brawlerIndex));
+        context.enqueueWork(()-> {
+            BrawlerIndex.setBrawlerIndex(brawlerIndex);
+            BrawlerIndex.addUnlockedBrawlers(brawlerIndex);
+        });
         context.setPacketHandled(true);
     }
 

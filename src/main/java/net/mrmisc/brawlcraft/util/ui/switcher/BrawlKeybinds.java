@@ -1,4 +1,4 @@
-package net.mrmisc.brawlcraft.util;
+package net.mrmisc.brawlcraft.util.ui.switcher;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;

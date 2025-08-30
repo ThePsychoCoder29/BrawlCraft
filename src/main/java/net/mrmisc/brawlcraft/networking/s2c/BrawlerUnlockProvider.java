@@ -12,8 +12,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class BrawlerUnlockProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-    public static Capability<BrawlerUnlock> BRAWLER_UNLOCK = CapabilityManager.get(new CapabilityToken<BrawlerUnlock>() {});
+    public static Capability<BrawlerUnlock> BRAWLER_UNLOCK = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     private BrawlerUnlock brawlerUnlock = null;
     private final LazyOptional<BrawlerUnlock> optional = LazyOptional.of(this::createBrawlerUnlock);
@@ -27,7 +29,7 @@ public class BrawlerUnlockProvider implements ICapabilityProvider, INBTSerializa
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == BRAWLER_UNLOCK){
+        if(cap.equals(BRAWLER_UNLOCK)){
             return optional.cast();
         }
 

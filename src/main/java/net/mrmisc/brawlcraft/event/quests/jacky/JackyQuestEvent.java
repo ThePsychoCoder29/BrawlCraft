@@ -18,7 +18,7 @@ import java.util.*;
 public class JackyQuestEvent {
 
     private static final Map<UUID, JackyQuestEvent.Tracker> brokenPickTracker = new HashMap<>();
-    private static final int QUEST_THRESHOLD = 1;
+    private static final int QUEST_THRESHOLD = 10;
 
 
     @SubscribeEvent

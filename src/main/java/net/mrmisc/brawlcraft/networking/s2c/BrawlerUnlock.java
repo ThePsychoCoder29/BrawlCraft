@@ -1,3 +1,4 @@
+
 package net.mrmisc.brawlcraft.networking.s2c;
 
 import net.minecraft.nbt.CompoundTag;
@@ -34,11 +35,11 @@ public class BrawlerUnlock {
         for (String name : brawlerUnlock) {
             listTag.add(StringTag.valueOf(name));
         }
-        tag.put("unlockedBrawlers", listTag);
+        tag.put("unlockedbrawlers", listTag);
     }
 
     public void loadNBTData(CompoundTag tag) {
-        ListTag listTag = tag.getList("unlockedBrawlers", Tag.TAG_STRING);
+        ListTag listTag = tag.getList("unlockedbrawlers", Tag.TAG_STRING);
         brawlerUnlock.clear();
         for (Tag entry : listTag) {
             brawlerUnlock.add(entry.getAsString());

@@ -1,4 +1,4 @@
-package net.mrmisc.brawlcraft.util;
+package net.mrmisc.brawlcraft.util.ui.switcher;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -19,10 +19,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.mrmisc.brawlcraft.networking.c2s.BrawlerDataPacket;
 import net.mrmisc.brawlcraft.networking.ModPacketHandler;
-import net.mrmisc.brawlcraft.networking.s2c.BrawlerUnlockProvider;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
+
+import static net.mrmisc.brawlcraft.util.Constants.*;
 
 @OnlyIn(Dist.CLIENT)
 public class BrawlerSwitcherScreen extends Screen {
@@ -94,13 +95,10 @@ public class BrawlerSwitcherScreen extends Screen {
     private boolean checkToClose() {
         assert this.minecraft != null;
         if (!InputConstants.isKeyDown(this.minecraft.getWindow().getWindow(), 292)) {
-            // Replace this with actual code to switch networking:
-            String brawlerName = this.currentlyHovered.getName().getString();
-            int brawlerIndex = getBrawlerIndex(brawlerName);
+            String brawlerNameString = this.currentlyHovered.getName().getString();
+            int brawlerIndex = getBrawlerIndex(brawlerNameString);
             LocalPlayer player = this.minecraft.player;
-            if(player != null) {
-                checkIfBrawlerUnlocked(player, brawlerIndex);
-            }
+            checkIfBrawlerUnlocked(player, brawlerIndex);
             this.minecraft.setScreen(null);
             return true;
         } else {
@@ -109,43 +107,20 @@ public class BrawlerSwitcherScreen extends Screen {
     }
 
     public int getBrawlerIndex(String string){
-        return switch (string) {
-            case "Normal" -> 1;
-            case "Dynamike" -> 2;
-            case "Max" -> 3;
-            case "Bea" -> 4;
-            case "Jacky" -> 5;
-            case "Spike" -> 6;
-            case "Doug" -> 7;
-            default -> 1; // Unrecognized
-        };
+        return Objects.requireNonNull(Brawlers.fromName(string)).getId();
     }
 
     public String getBrawlerName(int index){
-        return switch (index){
-            case 2 -> "Dynamike";
-            case 3 -> "Max";
-            case 4 -> "Bea";
-            case 5 -> "Jacky";
-            case 6 -> "Spike";
-            case 7 -> "Doug";
-            default -> "Normal";
-        };
+        return Brawlers.fromID(index).getName();
     }
 
-    public void checkIfBrawlerUnlocked(Player player, int brawlerIndex){
-        player.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(brawlerUnlock -> {
-            Set<String> unlocked = brawlerUnlock.getAll();
-            String brawlerName = getBrawlerName(brawlerIndex);
-            System.out.print(brawlerName);
-            System.out.print(unlocked + " brawler list");
-            if(unlocked.contains(brawlerName) || brawlerName.equals("Normal")){
-                ModPacketHandler.sendToServer(new BrawlerDataPacket(brawlerIndex));
-            }
-            else{
-                player.displayClientMessage(Component.literal(brawlerName + " is not unlocked yet !"), true);
-            }
-        });
+    public void checkIfBrawlerUnlocked(Player player, int index) {
+        String brawlerName = getBrawlerName(index);
+        if (ClientBrawlerData.UNLOCKED_BRAWLERS.contains(brawlerName) || brawlerName.equals(NORMAL)) {
+            ModPacketHandler.sendToServer(new BrawlerDataPacket(index));
+        } else {
+            player.displayClientMessage(Component.literal(brawlerName + " is not unlocked yet !"), true);
+        }
     }
 
     @Override
@@ -170,8 +145,9 @@ public class BrawlerSwitcherScreen extends Screen {
         MAX(Component.literal("Max"), new ItemStack(Items.WIND_CHARGE)),
         BEA(Component.literal("Bea"), new ItemStack(Items.HONEYCOMB)),
         JACKY(Component.literal("Jacky"), new ItemStack(Items.IRON_PICKAXE)),
-        SPIKE(Component.literal("Spike"), new ItemStack(Items.CACTUS)),
-        DOUG(Component.literal("Doug"), new ItemStack(Items.BREAD));
+        CROW(Component.literal("Crow"), new ItemStack(Items.POISONOUS_POTATO)),
+        DOUG(Component.literal("Doug"), new ItemStack(Items.BREAD)),
+        BO(Component.literal("Bo"), new ItemStack(Items.ARROW));
 
         static final BrawlerIcon[] VALUES = values();
         final Component name;
@@ -196,9 +172,10 @@ public class BrawlerSwitcherScreen extends Screen {
                 case DYNAMIKE -> MAX;
                 case MAX -> BEA;
                 case BEA -> JACKY;
-                case JACKY -> SPIKE;
-                case SPIKE -> DOUG;
-                case DOUG -> NORMAL;
+                case JACKY -> CROW;
+                case CROW -> DOUG;
+                case DOUG -> BO;
+                case BO -> NORMAL;
             };
         }
     }

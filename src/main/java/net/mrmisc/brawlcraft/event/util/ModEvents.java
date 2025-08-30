@@ -1,3 +1,4 @@
+
 package net.mrmisc.brawlcraft.event.util;
 
 import net.minecraft.resources.ResourceLocation;
@@ -21,12 +22,8 @@ public class ModEvents {
     @SubscribeEvent
     public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event){
         if(event.getObject() instanceof Player){
-            if(!event.getObject().getCapability(BrawlerIndexProvider.BRAWLER_INDEX).isPresent()){
-                event.addCapability(ResourceLocation.fromNamespaceAndPath(BrawlCraftMod.MOD_ID, "properties"), new BrawlerIndexProvider());
-            }
-            if(!event.getObject().getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).isPresent()){
-                event.addCapability(ResourceLocation.fromNamespaceAndPath(BrawlCraftMod.MOD_ID, "brawlerunlockid"), new BrawlerUnlockProvider());            }
-        }
+            event.addCapability(ResourceLocation.fromNamespaceAndPath(BrawlCraftMod.MOD_ID, "properties"), new BrawlerIndexProvider());
+            event.addCapability(ResourceLocation.fromNamespaceAndPath(BrawlCraftMod.MOD_ID, "unlockedbrawlers"), new BrawlerUnlockProvider());            }
     }
 
     @SubscribeEvent
@@ -38,18 +35,18 @@ public class ModEvents {
         if (newPlayer.level().isClientSide()) return;
         oldPlayer.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(oldStore ->
                 newPlayer.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(newStore -> {
-            newStore.copy(oldStore.getAll());
-            BrawlerUnlockPacket packet = new BrawlerUnlockPacket(newStore.getAll());
-            ModPacketHandler.sendToClient(packet, (ServerPlayer) newPlayer);
-        }));
+                    newStore.copy(oldStore.getAll());
+                    BrawlerUnlockPacket packet = new BrawlerUnlockPacket(newStore.getAll());
+                    ModPacketHandler.sendToClient(packet, (ServerPlayer) newPlayer);
+                }));
     }
 
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            event.getEntity().getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(data -> {
-                BrawlerUnlockPacket packet = new BrawlerUnlockPacket(data.getAll());
-                ModPacketHandler.sendToClient(packet, serverPlayer);
+            serverPlayer.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(data -> {
+                System.out.println("[SERVER] Sending full unlock sync to player on login: " + data.getAll());
+                ModPacketHandler.sendToClient(new BrawlerUnlockPacket(data.getAll()), serverPlayer);
             });
         }
     }

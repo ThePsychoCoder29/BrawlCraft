@@ -28,15 +28,15 @@ public class ModPacketHandler {
                 .decoder(BrawlerDataPacket::new)
                 .consumerMainThread(BrawlerDataPacket::handle)
                 .add();
-        INSTANCE.messageBuilder(BrawlerAddPacket.class, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(BrawlerAddPacket::toBytes)
-                .decoder(BrawlerAddPacket::new)
-                .consumerMainThread(BrawlerAddPacket::handle)
-                .add();
         INSTANCE.messageBuilder(BrawlerUnlockPacket.class, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(BrawlerUnlockPacket::encode)
                 .decoder(BrawlerUnlockPacket::decode)
                 .consumerMainThread(BrawlerUnlockPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(BrawlerAddPacket.class, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(BrawlerAddPacket::toBytes)
+                .decoder(BrawlerAddPacket::new)
+                .consumerMainThread(BrawlerAddPacket::handle)
                 .add();
     }
 
