@@ -25,7 +25,7 @@ public class DynamiteItem extends Item implements ProjectileItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack pStack, @NotNull TooltipContext pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
         if(Screen.hasShiftDown()){
             pTooltipComponents.add(Component.translatable("tooltip.brawlcraft.dynamite.tooltip"));
         }
@@ -36,37 +36,41 @@ public class DynamiteItem extends Item implements ProjectileItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, @NotNull InteractionHand pUsedHand) {
-        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
-        pLevel.playSound(
-                null,
-                pPlayer.getX(),
-                pPlayer.getY(),
-                pPlayer.getZ(),
-                SoundEvents.SNOWBALL_THROW,
-                SoundSource.NEUTRAL,
-                0.5F,
-                0.4F / (pLevel.getRandom().nextFloat() * 0.4F + 0.8F)
-        );
-        if (!pLevel.isClientSide) {
-            DynamiteProjectileEntity dynamite = new DynamiteProjectileEntity(pLevel, pPlayer);
-            dynamite.setItem(itemstack);
-            dynamite.shootFromRotation(pPlayer, pPlayer.getXRot(), pPlayer.getYRot(), 0.0F, 0.5F, 1.0F);
-            pLevel.addFreshEntity(dynamite);
-        }
-        pPlayer.awardStat(Stats.ITEM_USED.get(this));
-        pPlayer.getCapability(BrawlerIndexProvider.BRAWLER_INDEX).ifPresent(brawlerIndex -> {
-            int index = brawlerIndex.getBrawlerIndex();
-            if(index == 2){
-                itemstack.consume(0, pPlayer);
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        player.getCapability(BrawlerIndexProvider.BRAWLER_INDEX).ifPresent(brawlerIndex -> {
+            if(brawlerIndex.getBrawlerIndex() == 2) {
+                // Play throw sound
+                level.playSound(
+                        null,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.SNOWBALL_THROW,
+                        SoundSource.NEUTRAL,
+                        0.5F,
+                        0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+                );
+
+                // Spawn dynamite on server side
+                if (!level.isClientSide) {
+                    DynamiteProjectileEntity dynamite = new DynamiteProjectileEntity(level, player);
+                    dynamite.setItem(stack);
+                    dynamite.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.5F, 1.0F);
+                    level.addFreshEntity(dynamite);
+                }
+                // Stats & cooldown
+                player.awardStat(Stats.ITEM_USED.get(this));
+                stack.consume(0, player); // note: consumes *0* items, so it's basically redundant
+                player.getCooldowns().addCooldown(this, 100);
             }
             else {
-                itemstack.consume(1, pPlayer);
+                stack.consume(1, player);
             }
         });
-        pPlayer.getCooldowns().addCooldown(this, 100);
-        return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
+
 
 
     @Override

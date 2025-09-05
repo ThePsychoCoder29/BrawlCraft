@@ -25,6 +25,13 @@ public class BrawlerUnlock {
         brawlerUnlock.add(name);
     }
 
+    public void removeBrawlerUnlock(String name){
+        brawlerUnlock.remove(name);
+    }
+    public void clearBrawlerUnlock(){
+        brawlerUnlock.clear();
+    }
+
     public void copy(Set<String> brawlerUnlock) {
         this.brawlerUnlock.clear();
         this.brawlerUnlock.addAll(brawlerUnlock);

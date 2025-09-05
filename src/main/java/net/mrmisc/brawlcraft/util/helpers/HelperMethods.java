@@ -1,5 +1,5 @@
 
-package net.mrmisc.brawlcraft.util;
+package net.mrmisc.brawlcraft.util.helpers;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,8 +16,6 @@ public class HelperMethods {
         CompoundTag tag = player.getPersistentData();
 
         if (tag.contains(brawlerName) && tag.getBoolean(brawlerName)) {
-            player.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(data ->
-                    data.addBrawlerUnlock(brawlerName));
             player.sendSystemMessage(Component.literal(brawlerName + " is already unlocked."), true);
             return;
         }
@@ -30,7 +28,29 @@ public class HelperMethods {
             ModPacketHandler.sendToClient(new BrawlerUnlockPacket(data.getAll()), player);
         });
 
-        player.sendSystemMessage(Component.literal("Quest complete! You unlocked " + brawlerName + "!"), true);
+        player.sendSystemMessage(Component.literal("You unlocked " + brawlerName + "!"), true);
+    }
+    public static void removeBrawler(String brawlerName, ServerPlayer player) {
+        CompoundTag tag = player.getPersistentData();
+
+        if (tag.contains(brawlerName) && tag.getBoolean(brawlerName)) {
+            player.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(data -> {
+                data.removeBrawlerUnlock(brawlerName);
+                ModPacketHandler.sendToClient(new BrawlerUnlockPacket(data.getAll()), player);
+            });
+
+            tag.remove(brawlerName);
+            player.sendSystemMessage(Component.literal("Locked " + brawlerName), true);
+            return;
+        }
+
+        player.sendSystemMessage(Component.literal(brawlerName + " is already locked."), true);
+    }
+    public static void clearBrawlers(ServerPlayer player) {
+        player.getCapability(BrawlerUnlockProvider.BRAWLER_UNLOCK).ifPresent(data -> {
+            data.clearBrawlerUnlock();
+            ModPacketHandler.sendToClient(new BrawlerUnlockPacket(data.getAll()), player);
+        });
     }
 
 
@@ -38,7 +58,7 @@ public class HelperMethods {
         if(!player.getPersistentData().getBoolean(brawlerName) && !player.getPersistentData().contains(brawlerName)) {
             UUID uuid = player.getUUID();
             int count = map.getOrDefault(uuid, 0) + 1;
-            player.sendSystemMessage(Component.literal(quest + ":" + count + "/" + threshold));
+            player.sendSystemMessage(Component.literal(quest + ":" + count + "/" + threshold), true);
             map.put(uuid, count);
             if(count >= threshold){
                 map.remove(uuid);

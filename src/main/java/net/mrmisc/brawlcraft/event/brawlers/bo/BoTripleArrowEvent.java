@@ -26,8 +26,8 @@ public class BoTripleArrowEvent {
             LivingEntity shooter = event.getEntity();
             if (shooter instanceof ServerPlayer player) {
                 player.getCapability(BrawlerIndexProvider.BRAWLER_INDEX).ifPresent(brawlerIndex -> {
-                    Set<Integer> unlockedBrawlers = brawlerIndex.getUnlockedBrawlers();
-                    if(unlockedBrawlers.contains(8)) {
+                    int index = brawlerIndex.getBrawlerIndex();
+                    if(index == 8) {
                         ItemStack bow = event.getBow();
                         int charge = event.getCharge();
                         float velocity = BowItem.getPowerForTime(charge);
@@ -36,7 +36,7 @@ public class BoTripleArrowEvent {
                             event.setCanceled(true);
 
                             // spawn three arrows in total
-                            spawnThreeArrows(player, shooter, velocity, bow);
+                            spawnThreeArrows(player, velocity, bow);
                         }
                     }
                 });
@@ -44,19 +44,26 @@ public class BoTripleArrowEvent {
         }
     }
 
-    protected static void spawnThreeArrows(Player player, LivingEntity shooter, float velocity, ItemStack bow){
+    protected static void spawnThreeArrows(Player player, float velocity, ItemStack bow){
         for (int i = -1; i < 2; i++) {
             Arrow arrow = new Arrow(player.level(), player.getX() + i, player.getEyeY(), player.getZ(), new ItemStack(Items.ARROW), bow);
             arrow.setOwner(player);
             arrow.shootFromRotation(player, player.getXRot() + i,
                     player.getYRot() + i,
                     0.0F, velocity * 3.0F, 1.0F);
-            if(i == 0) {
+            if (i == 0) { // main arrow
                 arrow.pickup = AbstractArrow.Pickup.ALLOWED;
-                int arrowCount = shooter.getArrowCount() - 1;
-                shooter.setArrowCount(arrowCount);
+                if (!player.isCreative()) {
+                    ItemStack ammo = player.getProjectile(bow);
+                    if (!ammo.isEmpty()) {
+                        ammo.shrink(1);
+                        if (ammo.isEmpty()) {
+                            player.getInventory().removeItem(ammo);
+                        }
+                    }
+                }
             }
-            else{
+            else {
                 arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
             }
             player.level().addFreshEntity(arrow);

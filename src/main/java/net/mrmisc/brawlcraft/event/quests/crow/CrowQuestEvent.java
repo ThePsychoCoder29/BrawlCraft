@@ -11,15 +11,21 @@ import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.mrmisc.brawlcraft.BrawlCraftMod;
-import net.mrmisc.brawlcraft.util.HelperMethods;
+import net.mrmisc.brawlcraft.util.helpers.HelperMethods;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import static net.mrmisc.brawlcraft.util.helpers.Constants.CROW;
 
 @Mod.EventBusSubscriber(modid = BrawlCraftMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CrowQuestEvent {
     private static final String POISON_ID_KEY = "QuestPoisonID";
     private static final String POISON_KILL_COUNT_KEY = "QuestPoisonKillCount";
-    private static final int THRESHOLD = 5;
+    private static final int THRESHOLD = 20;
+
+    private static final Map<UUID, Integer> crowMap = new HashMap<>();
 
     // When player gets a poison effect
     @SubscribeEvent
@@ -48,13 +54,13 @@ public class CrowQuestEvent {
 
         // Count kill
         int kills = data.getInt(POISON_KILL_COUNT_KEY) + 1;
-        player.sendSystemMessage(Component.literal("Zombies Killed" + ":" + kills + "/" + THRESHOLD));
         data.putInt(POISON_KILL_COUNT_KEY, kills);
+        player.sendSystemMessage(Component.literal("Zombies Killed" + ":" + kills + "/" + THRESHOLD));
 
         // Quest completion check
-        if (kills >= THRESHOLD) {
+        if (HelperMethods.manageQuestThresholdCounter(player, crowMap, THRESHOLD, "Zombies Killed ", CROW)) {
             // Trigger quest completion logic
-            HelperMethods.completeQuest("Crow", player);
+            HelperMethods.completeQuest(CROW, player);
         }
     }
 

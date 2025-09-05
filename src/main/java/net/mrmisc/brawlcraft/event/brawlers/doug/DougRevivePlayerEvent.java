@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.mrmisc.brawlcraft.BrawlCraftMod;
 import net.mrmisc.brawlcraft.networking.c2s.BrawlerIndexProvider;
 import net.mrmisc.brawlcraft.util.ui.switcher.ClientTickHandler;
-import net.mrmisc.brawlcraft.util.PlayerTimerManager;
+import net.mrmisc.brawlcraft.util.helpers.PlayerTimerManager;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +35,10 @@ public class DougRevivePlayerEvent {
             int index = brawlerIndex.getBrawlerIndex();
             if(index == 7) {
                 if(player.getInventory().contains(new ItemStack(Items.TOTEM_OF_UNDYING)) && player.getRandom().nextFloat() <= 0.75) {
+                    ItemStack totem = player.getInventory().getItem(player.getInventory().findSlotMatchingItem(new ItemStack(Items.TOTEM_OF_UNDYING)));
+                    if (!totem.isEmpty()) {
+                        totem.shrink(1);
+                    }
                     event.setCanceled(true);
 
                     // Store the current position
@@ -46,7 +50,7 @@ public class DougRevivePlayerEvent {
                     addDeathEffects(player);
                     player.setHealth(1f);
 
-                    PlayerTimerManager.scheduleDelay(player, 3, ()-> {
+                    PlayerTimerManager.scheduleDelay(player, 10, ()-> {
                         // "Fake" death sound or animation
                         player.level().playSound(null, deathPos, SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0F, 1.0F);
                         // Delay task
@@ -75,9 +79,9 @@ public class DougRevivePlayerEvent {
     }
 
     public static void addDeathEffects(Player player){
-        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60));
-        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 5));
-        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 10)); // Prevent damage while down
+        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200));
+        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 5));
+        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 10)); // Prevent damage while down
     }
 
     public static void setDoDeath(boolean death) {

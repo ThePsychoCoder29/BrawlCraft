@@ -1,4 +1,4 @@
-package net.mrmisc.brawlcraft.util;
+package net.mrmisc.brawlcraft.util.helpers;
 
 import net.minecraft.server.level.ServerPlayer;
 

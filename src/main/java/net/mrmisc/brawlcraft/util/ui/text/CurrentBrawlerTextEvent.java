@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.mrmisc.brawlcraft.networking.c2s.BrawlerIndexProvider;
 
-import static net.mrmisc.brawlcraft.util.Constants.*;
+import static net.mrmisc.brawlcraft.util.helpers.Constants.*;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class CurrentBrawlerTextEvent {

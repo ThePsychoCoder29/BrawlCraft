@@ -1,4 +1,4 @@
-package net.mrmisc.brawlcraft.util;
+package net.mrmisc.brawlcraft.util.helpers;
 
 public class Constants {
     public static final String DYNAMIKE = "Dynamike";

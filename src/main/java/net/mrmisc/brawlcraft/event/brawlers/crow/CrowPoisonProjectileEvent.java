@@ -29,7 +29,7 @@ public class CrowPoisonProjectileEvent {
             if(index == 6){
                 if(event.getRayTraceResult() instanceof EntityHitResult result){
                     if(result.getEntity() instanceof LivingEntity entity){
-                        if(player.getRandom().nextFloat() <= 0.5f) {
+                        if(player.getRandom().nextFloat() <= 0.33f) {
                             entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 2));
                         }
                     }

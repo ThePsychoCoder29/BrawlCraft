@@ -15,18 +15,18 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.mrmisc.brawlcraft.BrawlCraftMod;
 import net.mrmisc.brawlcraft.networking.c2s.BrawlerIndexProvider;
-import net.mrmisc.brawlcraft.util.Constants.*;
-import net.mrmisc.brawlcraft.util.PlayerTimerManager;
+import net.mrmisc.brawlcraft.util.helpers.Constants.*;
+import net.mrmisc.brawlcraft.util.helpers.PlayerTimerManager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.mrmisc.brawlcraft.util.Constants.MAX;
+import static net.mrmisc.brawlcraft.util.helpers.Constants.MAX;
 
 @Mod.EventBusSubscriber(modid = BrawlCraftMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class MaxGiveSpeedEffectEvent {
+public class MaxTeleportEvent {
     private static final Map<UUID, Runnable> activeRewinds = new HashMap<>();
     private static final List<Holder<Potion>> potions = List.of(
             Potions.SWIFTNESS,
@@ -69,7 +69,7 @@ public class MaxGiveSpeedEffectEvent {
             if (player.isDeadOrDying()) return;
 
             // restore pos + health
-            player.teleportTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            player.teleportTo(pos.getX(), pos.getY() + 0.5, pos.getZ());
             if (player.getHealth() < health) {
                 player.setHealth(health);
             }
@@ -77,8 +77,6 @@ public class MaxGiveSpeedEffectEvent {
 
         // store for cancellation
         activeRewinds.put(id, task);
-
-        // schedule with your delay system
         PlayerTimerManager.scheduleDelay(player, delaySeconds, task);
     }
 

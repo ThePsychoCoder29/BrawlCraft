@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.mrmisc.brawlcraft.BrawlCraftMod;
 import net.mrmisc.brawlcraft.item.ModItems;
-import net.mrmisc.brawlcraft.util.HelperMethods;
+import net.mrmisc.brawlcraft.util.helpers.HelperMethods;
 
 import java.util.*;
 

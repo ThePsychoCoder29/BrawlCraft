@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-import static net.mrmisc.brawlcraft.util.Constants.*;
+import static net.mrmisc.brawlcraft.util.helpers.Constants.*;
 
 @OnlyIn(Dist.CLIENT)
 public class BrawlerSwitcherScreen extends Screen {

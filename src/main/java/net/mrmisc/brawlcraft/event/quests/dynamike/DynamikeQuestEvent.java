@@ -14,20 +14,20 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.mrmisc.brawlcraft.BrawlCraftMod;
 import net.mrmisc.brawlcraft.item.ModItems;
-import net.mrmisc.brawlcraft.util.HelperMethods;
+import net.mrmisc.brawlcraft.util.helpers.HelperMethods;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.mrmisc.brawlcraft.util.Constants.DYNAMIKE;
+import static net.mrmisc.brawlcraft.util.helpers.Constants.DYNAMIKE;
 
 @Mod.EventBusSubscriber(modid = BrawlCraftMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DynamikeQuestEvent {
     static Map<UUID, Integer> tntKillCounts =  new HashMap<>();
     static String id = "entityDamagedByTNT";
     static String name = "Dynamike";
-    protected static int THRESHOLD = 5;
+    protected static int THRESHOLD = 20;
 
     @SubscribeEvent
     public static void tntExplosion(ExplosionEvent.Detonate event){
